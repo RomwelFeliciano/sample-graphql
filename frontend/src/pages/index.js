@@ -28,7 +28,7 @@ export default function Home() {
             See All Posts
           </button>
         </Link>
-        <Link href={`/posts/${id ? id : ""}`}>
+        <Link href={`/posts/${id ? id : "no-id"}`}>
           <button className="bg-sky-500 rounded-md px-4 py-2">
             See Post and Comment
           </button>
