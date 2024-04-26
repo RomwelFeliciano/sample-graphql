@@ -14,7 +14,7 @@ const typeDefs = gql`
     id: ID!
     title: String!
     content: String!
-    author: [User!]!
+    author: User!
     comments: [Comment!]!
   }
 

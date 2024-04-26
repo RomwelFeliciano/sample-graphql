@@ -64,7 +64,8 @@ const resolvers = {
       const [user] = await pool.query("SELECT * FROM users WHERE id = ?", [
         post.user_id,
       ]);
-      return user;
+      // console.log(user);
+      return user[0];
     },
   },
 
