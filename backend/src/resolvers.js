@@ -19,20 +19,21 @@ const resolvers = {
     // Get All Posts
     getPosts: async () => {
       const [posts] = await pool.query("SELECT * FROM posts");
+      // console.log(posts);
       return posts;
     },
 
     // Get All Comments
-    getComments: async () => {
-      const [comments] = await pool.query("SELECT * FROM comments");
-      return comments;
-    },
+    // getComments: async () => {
+    //   const [comments] = await pool.query("SELECT * FROM comments");
+    //   return comments;
+    // },
 
     // Get A Specific User
-    getUser: async (_, { id }) => {
-      const [user] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
-      return user[0];
-    },
+    // getUser: async (_, { id }) => {
+    //   const [user] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
+    //   return user[0];
+    // },
 
     // Get A Specific Post
     getPost: async (_, { id }) => {
@@ -41,13 +42,13 @@ const resolvers = {
     },
 
     // Get A Specific Comment
-    getComment: async (_, { id }) => {
-      const [comment] = await pool.query(
-        "SELECT * FROM comments WHERE id = ?",
-        [id]
-      );
-      return comment[0];
-    },
+    // getComment: async (_, { id }) => {
+    //   const [comment] = await pool.query(
+    //     "SELECT * FROM comments WHERE id = ?",
+    //     [id]
+    //   );
+    //   return comment[0];
+    // },
   },
 
   // List All Comments in a Specific Post
@@ -60,13 +61,13 @@ const resolvers = {
       return comments;
     },
 
-    author: async (post) => {
-      const [user] = await pool.query("SELECT * FROM users WHERE id = ?", [
-        post.user_id,
-      ]);
-      // console.log(user);
-      return user[0];
-    },
+    // author: async (post) => {
+    //   const [user] = await pool.query("SELECT * FROM users WHERE id = ?", [
+    //     post.user_id,
+    //   ]);
+    //   console.log(user);
+    //   return user[0];
+    // },
   },
 
   // List All Posts in a Specific User

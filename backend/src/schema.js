@@ -14,7 +14,8 @@ const typeDefs = gql`
     id: ID!
     title: String!
     content: String!
-    author: User!
+    user_id: ID!
+    # author: User!
     comments: [Comment!]!
   }
 
@@ -28,10 +29,10 @@ const typeDefs = gql`
   type Query {
     getUsers: [User!]!
     getPosts: [Post!]!
-    getComments: [Comment!]!
-    getUser(id: ID!): User
+    # getComments: [Comment!]!
+    # getUser(id: ID!): User
     getPost(id: ID!): Post
-    getComment(id: ID!): Comment
+    # getComment(id: ID!): Comment
   }
 `;
 
