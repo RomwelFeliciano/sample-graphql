@@ -28,8 +28,10 @@ export const GET_ALL_POSTS = gql`
 export const GET_POST_WITH_COMMENTS = gql`
   query ($postID: ID!) {
     getPost(id: $postID) {
+      id
       title
       content
+      user_id
       comments {
         id
         content
