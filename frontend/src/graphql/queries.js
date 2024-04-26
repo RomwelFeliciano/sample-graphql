@@ -16,8 +16,10 @@ export const GET_ALL_USERS = gql`
 export const GET_ALL_POSTS = gql`
   query {
     getPosts {
+      id
       title
       content
+      user_id
     }
   }
 `;
@@ -29,7 +31,10 @@ export const GET_POST_WITH_COMMENTS = gql`
       title
       content
       comments {
+        id
         content
+        user_id
+        post_id
       }
     }
   }
