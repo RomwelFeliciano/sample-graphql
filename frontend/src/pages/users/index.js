@@ -23,15 +23,20 @@ export default function Users() {
     <div className="flex flex-col justify-center items-center pt-44 gap-4">
       <BackButton />
       <table className="table w-[800px] text-center text-2xl">
-        <tr className="border-2 border-sky-700 h-20 bg-neutral-900">
-          <th>ID</th>
-          <th>Name</th>
-          <th>Age</th>
-          <th>Job</th>
-        </tr>
+        <thead>
+          <tr className="border-2 border-sky-700 h-20 bg-neutral-900">
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Job</th>
+          </tr>
+        </thead>
         <tbody>
           {data.getUsers.map(({ id, name, age, job }) => (
-            <tr className="border-2 border-sky-700 h-20 bg-neutral-900">
+            <tr
+              className="border-2 border-sky-700 h-20 bg-neutral-900"
+              key={id}
+            >
               <td>{id}</td>
               <td>{name}</td>
               <td>{age}</td>

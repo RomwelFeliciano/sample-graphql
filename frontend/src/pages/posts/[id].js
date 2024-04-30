@@ -1,5 +1,6 @@
 import BackButton from "@/components/BackButton";
 import ErrorPage from "@/components/ErrorPage";
+import Spinner from "@/components/Spinner";
 import { useQuery, gql } from "@apollo/client";
 import { useRouter } from "next/router";
 
@@ -10,6 +11,7 @@ const GET_POST_WITH_COMMENTS = gql`
       title
       content
       comments {
+        id
         content
       }
     }
@@ -26,7 +28,7 @@ export default function SinglePost() {
   });
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Spinner />;
   }
 
   if (error || !data || !data.getPost) {
@@ -44,11 +46,15 @@ export default function SinglePost() {
         <p className="bg-sky-600 px-4 py-2">Content: "{content}"</p>
         <h2 className="bg-sky-950 px-4 py-2 text-center font-bold">Comments</h2>
         <ul>
-          {comments.map((comment, index) => (
-            <li className="bg-sky-800 px-4 py-2" key={index}>
-              {comment.content}
-            </li>
-          ))}
+          {comments.length > 0 ? (
+            comments.map((comment, index) => (
+              <li className="bg-sky-800 px-4 py-2" key={index}>
+                ID: {comment.id} - {comment.content}
+              </li>
+            ))
+          ) : (
+            <li className="bg-red-800 px-4 py-2">No Comments</li>
+          )}
         </ul>
       </div>
     </div>
