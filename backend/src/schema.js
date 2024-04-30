@@ -34,6 +34,16 @@ const typeDefs = gql`
     getPost(id: ID!): Post
     # getComment(id: ID!): Comment
   }
+
+  type Mutation {
+    createUser(input: CreateUserInput!): User
+  }
+
+  input CreateUserInput {
+    name: String!
+    age: Int!
+    job: String!
+  }
 `;
 
 module.exports = typeDefs;
