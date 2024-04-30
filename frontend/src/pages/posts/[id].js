@@ -1,6 +1,20 @@
-import { GET_POST_WITH_COMMENTS } from "@/graphql/queries";
-import { useQuery } from "@apollo/client";
+import BackButton from "@/components/BackButton";
+import ErrorPage from "@/components/ErrorPage";
+import { useQuery, gql } from "@apollo/client";
 import { useRouter } from "next/router";
+
+const GET_POST_WITH_COMMENTS = gql`
+  query ($postID: ID!) {
+    getPost(id: $postID) {
+      id
+      title
+      content
+      comments {
+        content
+      }
+    }
+  }
+`;
 
 export default function SinglePost() {
   const router = useRouter();
@@ -8,7 +22,7 @@ export default function SinglePost() {
 
   const { loading, error, data } = useQuery(GET_POST_WITH_COMMENTS, {
     variables: { postID: id },
-    skip: !id, // Skip the query if id is falsy
+    skip: !id,
   });
 
   if (loading) {
@@ -16,21 +30,27 @@ export default function SinglePost() {
   }
 
   if (error || !data || !data.getPost) {
-    return <p>Error fetching post data</p>;
+    return <ErrorPage />;
   }
 
   const { title, content, comments } = data.getPost;
 
   return (
-    <div>
-      <h1>{title}</h1>
-      <p>{content}</p>
-      <h2>Comments</h2>
-      <ul>
-        {comments.map((comment, index) => (
-          <li key={index}>{comment.content}</li>
-        ))}
-      </ul>
+    <div className="min-h-screen flex flex-col justify-center items-center gap-4">
+      <BackButton />
+      <div className="flex flex-col gap-2 w-[500px] text-xl">
+        <h1 className="bg-sky-950 px-4 py-2 text-center font-bold">ID: {id}</h1>
+        <h1 className="bg-sky-800 px-4 py-2">Title: {title}</h1>
+        <p className="bg-sky-600 px-4 py-2">Content: "{content}"</p>
+        <h2 className="bg-sky-950 px-4 py-2 text-center font-bold">Comments</h2>
+        <ul>
+          {comments.map((comment, index) => (
+            <li className="bg-sky-800 px-4 py-2" key={index}>
+              {comment.content}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

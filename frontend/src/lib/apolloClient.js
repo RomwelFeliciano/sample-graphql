@@ -1,5 +1,6 @@
-import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
+import { ApolloClient, HttpLink, from } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
+import { cache } from "./cache";
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -18,6 +19,6 @@ const link = from([
 ]);
 
 export const client = new ApolloClient({
-  cache: new InMemoryCache(),
   link: link,
+  cache,
 });

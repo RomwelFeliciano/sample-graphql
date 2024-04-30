@@ -1,10 +1,19 @@
-"use client";
-
-import Link from "next/link";
+import { useQuery, gql } from "@apollo/client";
 import { useState } from "react";
+import Link from "next/link";
+
+const GET_ALL_POSTS = gql`
+  query {
+    getPosts {
+      id
+      title
+    }
+  }
+`;
 
 export default function Home() {
   const [id, setId] = useState();
+  const { data } = useQuery(GET_ALL_POSTS);
 
   return (
     <main className="flex flex-col pt-24">
@@ -19,22 +28,26 @@ export default function Home() {
             Posts Page
           </button>
         </Link>
-        <div>
-          <Link href={`/posts/${id ? id : "no-id"}`}>
+        <div className="flex flex-col-reverse gap-6">
+          <Link href={`/posts/${id ? id : "no-post-selected"}`}>
             <button className="bg-sky-500 transition-all duration-300 ease-in-out hover:bg-sky-700 w-[400px] rounded-md px-4 py-2">
               Specific Post with Comments
             </button>
           </Link>
-          <div className="flex justify-center items-center flex-col gap-2">
-            <label className="text-2xl">Put user ID here</label>
-            <input
-              type="number"
-              min={1}
-              placeholder="Enter Post ID Number..."
-              className="w-[400px] px-2 py-2 rounded-md text-2xl text-black border-none focus:outline-none"
-              onChange={(e) => setId(e.target.value)}
-            />
-          </div>
+          <select
+            className="w-[400px] cursor-pointer px-2 py-2 rounded-md text-2xl text-black border-none focus:outline-none"
+            onChange={(e) => setId(e.target.value)}
+          >
+            <option selected disabled>
+              Choose a post...
+            </option>
+            {data &&
+              data.getPosts.map((post) => (
+                <option key={post.id} value={post.id}>
+                  {post.title}
+                </option>
+              ))}
+          </select>
         </div>
       </div>
     </main>

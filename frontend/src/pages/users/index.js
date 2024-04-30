@@ -1,7 +1,17 @@
+import { useQuery, gql } from "@apollo/client";
 import Spinner from "@/components/Spinner";
-import { GET_ALL_USERS } from "@/graphql/queries";
-import { useQuery } from "@apollo/client";
-import Link from "next/link";
+import BackButton from "@/components/BackButton";
+
+const GET_ALL_USERS = gql`
+  query {
+    getUsers {
+      id
+      name
+      age
+      job
+    }
+  }
+`;
 
 export default function Users() {
   const { loading, error, data } = useQuery(GET_ALL_USERS);
@@ -11,7 +21,7 @@ export default function Users() {
 
   return (
     <div className="flex flex-col justify-center items-center pt-44 gap-4">
-      <Link href={"/"}>Go back</Link>
+      <BackButton />
       <table className="table w-[800px] text-center text-2xl">
         <tr className="border-2 border-sky-700 h-20 bg-neutral-900">
           <th>ID</th>
