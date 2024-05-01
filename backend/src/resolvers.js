@@ -54,17 +54,16 @@ const resolvers = {
   Mutation: {
     createUser: async (_, { input }) => {
       const { name, age, job } = input;
-      const [result] = await pool.query(
+      const [user] = await pool.query(
         "INSERT INTO users (name, age, job) VALUES (?, ?, ?)",
         [name, age, job]
       );
       const newUser = {
-        id: result.insertId,
+        id: user.insertId,
         name,
         age,
         job,
       };
-      console.log(newUser);
       return newUser;
     },
 
