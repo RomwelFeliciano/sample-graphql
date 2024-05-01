@@ -67,6 +67,26 @@ const resolvers = {
       console.log(newUser);
       return newUser;
     },
+
+    updateUser: async (_, { id, input }) => {
+      const { name, age, job } = input;
+      const [user] = await pool.query(
+        "UPDATE users SET name = ?, age = ?, job = ? WHERE id = ?",
+        [name, age, job, id]
+      );
+      if (user.affectedRows === 0) {
+        throw new Error("User not found");
+      }
+      return { id, name, age, job };
+    },
+
+    deleteUser: async (_, { id }) => {
+      const [user] = await pool.query("DELETE FROM users WHERE id = ?", [id]);
+      if (user.affectedRows === 0) {
+        throw new Error("User not found");
+      }
+      return { id };
+    },
   },
 
   // List All Comments in a Specific Post

@@ -24,13 +24,34 @@ const CREATE_USER = gql`
   }
 `;
 
+const UPDATE_USER = gql`
+  mutation UpdateUser($updateUserId: ID!, $input: UpdateUserInput!) {
+    updateUser(id: $updateUserId, input: $input) {
+      name
+      age
+      job
+    }
+  }
+`;
+
+const DELETE_USER = gql`
+  mutation DeleteUser($deleteUserId: ID!) {
+    deleteUser(id: $deleteUserId) {
+      id
+    }
+  }
+`;
+
 export default function Users() {
   const { loading, error, data, refetch } = useQuery(GET_ALL_USERS);
   const [createUser] = useMutation(CREATE_USER);
+  const [updateUser] = useMutation(UPDATE_USER);
+  const [deleteUser] = useMutation(DELETE_USER);
   const [formInput, setFormInput] = useState({
+    id: "",
     name: "",
-    age: 0,
-    job: "",
+    age: "",
+    job: "no-selected-job",
   });
 
   async function handleSubmit(e) {
@@ -38,22 +59,42 @@ export default function Users() {
     try {
       const input = { ...formInput, age: parseInt(formInput.age, 10) };
 
-      await createUser({ variables: { input } });
+      if (formInput.id) {
+        // If formInput has an id, it means we're updating an existing user
+        await updateUser({ variables: { updateUserId: formInput.id, input } });
+      } else {
+        delete input.id;
+        await createUser({ variables: { input } });
+      }
+
       await refetch();
       setFormInput({
+        id: "",
         name: "",
-        age: 0,
-        job: "",
+        age: "",
+        job: "no-selected-job",
       });
     } catch (error) {
-      console.error("Error creating user:", err);
+      console.error("Error creating user:", error);
     }
   }
 
   function handleInputChange(e) {
     const { name, value } = e.target;
-
     setFormInput({ ...formInput, [name]: value });
+  }
+
+  function getUserData(user) {
+    setFormInput(user);
+  }
+
+  async function handleDeleteUser(id) {
+    try {
+      await deleteUser({ variables: { deleteUserId: id } });
+      await refetch();
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
   }
 
   if (loading) return <Spinner />;
@@ -69,6 +110,7 @@ export default function Users() {
             className="px-4 py-2 rounded-md"
             name="name"
             value={formInput.name}
+            required
             onChange={handleInputChange}
           />
           <input
@@ -78,17 +120,32 @@ export default function Users() {
             className="px-4 py-2 rounded-md"
             name="age"
             value={formInput.age}
+            required
             onChange={handleInputChange}
           />
-          <input
-            type="text"
-            placeholder="job"
+          <select
             className="px-4 py-2 rounded-md"
             name="job"
             value={formInput.job}
+            required
             onChange={handleInputChange}
-          />
-          <button type="submit">Submit</button>
+          >
+            <option disabled value="no-selected-job">
+              Select job...
+            </option>
+            <option value="Doctor">Doctor</option>
+            <option value="Engineer">Engineer</option>
+            <option value="IT Department">IT Department</option>
+            <option value="Tambay">Tambay</option>
+            <option value="Teacher">Teacher</option>
+          </select>
+
+          <button
+            className="bg-sky-800 hover:bg-sky-950 transition-all duration-300 ease-in-out text-white px-4 py-2 rounded-md"
+            type="submit"
+          >
+            {!formInput.id ? "Submit" : "Edit"}
+          </button>
         </form>
       </div>
       <BackButton />
@@ -99,6 +156,7 @@ export default function Users() {
             <th>Name</th>
             <th>Age</th>
             <th>Job</th>
+            <th colSpan={2}>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -111,6 +169,18 @@ export default function Users() {
               <td>{name}</td>
               <td>{age}</td>
               <td>{job}</td>
+              <td
+                className="cursor-pointer"
+                onClick={() => getUserData({ id, name, age, job })}
+              >
+                Edit
+              </td>
+              <td
+                className="cursor-pointer"
+                onClick={() => handleDeleteUser(id)}
+              >
+                Delete
+              </td>
             </tr>
           ))}
         </tbody>
