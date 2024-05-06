@@ -1,56 +1,55 @@
-import { useQuery, gql } from "@apollo/client";
+import { useMutation, gql } from "@apollo/client";
 import { useState } from "react";
-import Link from "next/link";
 
-const GET_ALL_POSTS = gql`
-  query {
-    getPosts {
-      id
-      title
-    }
+const LOGIN_USER = gql`
+  mutation Login($name: String!, $password: String!) {
+    login(name: $name, password: $password)
   }
 `;
 
 export default function Home() {
-  const [postID, setPostID] = useState("no-selected-post");
-  const { data } = useQuery(GET_ALL_POSTS);
+  // const { loading, error, data } = useQuery(GET_USERS);
+
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [userLogin] = useMutation(LOGIN_USER);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await userLogin({ variables: { name, password } });
+
+      const token = data.login;
+      console.log(token);
+
+      console.log("User Logged In");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <main className="flex flex-col pt-24">
-      <div className="h-96 flex flex-col items-center justify-center gap-6 text-black text-2xl">
-        <Link href={"/users"}>
-          <button className="bg-sky-500 transition-all duration-300 ease-in-out hover:bg-sky-700 w-[400px] rounded-md px-4 py-2">
-            Users Page
-          </button>
-        </Link>
-        <Link href={"/posts"}>
-          <button className="bg-sky-500 transition-all duration-300 ease-in-out hover:bg-sky-700 w-[400px] rounded-md px-4 py-2">
-            Posts Page
-          </button>
-        </Link>
-        <div className="flex flex-col-reverse gap-6">
-          <Link href={`/posts/${postID}`}>
-            <button className="bg-sky-500 transition-all duration-300 ease-in-out hover:bg-sky-700 w-[400px] rounded-md px-4 py-2">
-              Specific Post with Comments
-            </button>
-          </Link>
-          <select
-            className="w-[400px] cursor-pointer px-2 py-2 rounded-md text-2xl text-black border-none focus:outline-none"
-            value={postID}
-            onChange={(e) => setPostID(e.target.value)}
-          >
-            <option disabled value={"no-selected-post"}>
-              Choose a post...
-            </option>
-            {data &&
-              data.getPosts.map((post) => (
-                <option key={post.id} value={post.id}>
-                  {post.title}
-                </option>
-              ))}
-          </select>
-        </div>
-      </div>
+    <main className="flex flex-col items-center justify-center pt-24">
+      <form className="flex flex-col gap-2 text-black" onSubmit={handleLogin}>
+        <input
+          type="text"
+          required
+          placeholder="username"
+          className="px-4 py-2"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="text"
+          required
+          placeholder="password"
+          className="px-4 py-2"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button className="bg-white px-4 py-2" type="submit">
+          Login
+        </button>
+      </form>
     </main>
   );
 }
